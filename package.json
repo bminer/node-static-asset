@@ -1,0 +1,16 @@
+{
+  "author": "Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com)",
+  "name": "static-asset",
+  "description": "Static asset manager for Node.JS",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bminer/node-static-asset.git"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
