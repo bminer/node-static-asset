@@ -11,6 +11,21 @@ that means.
 
 http://code.google.com/speed/page-speed/docs/caching.html
 
+## The Basics
+
+node-static-asset allows you to compile, bundle, minify/compress, and deploy your static assets.
+The basic idea works like this:
+
+1. Define your static asset deployment strategy for 'development' and 'production' environments.
+	* Tell node-static-asset where your static assets are.
+	* Tell node-static-asset how to process certain file extensions.
+	* Tell node-static-asset where to put the static assets after processing
+2. Deploy!
+3. Serve up using Amazon S3 or locally with built-in middleware. Point your views to the URL
+	fingerprints of the generated assets.
+
+See! Only 3 steps! :)
+
 ## Install
 
 `npm install static-asset`
