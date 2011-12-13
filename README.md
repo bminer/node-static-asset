@@ -33,7 +33,8 @@ By default, static-asset does the following:
 	* When applicable, all files are minified and compiled without debugging information
 * .css and .styl files are rendered using Stylus
 * .jade files are compiled and written to *.js files
-* .coffee files are compiled to *.js files
+* .coffee files are compiled to *.js files (not working yet...)
+* index.js file is bundled using Browserify
 * Assumes the following directory structure for your project:
 
 ```
@@ -64,8 +65,9 @@ By default, static-asset does the following:
 var app = require('express').createServer();
 var asset = require('static-asset');
 var stylus = require('stylus');
-var jade = require('jade');
+asset.useDefaultConfiguration();
 
+//Start overriding some configuration
 asset.configure(function() {
 	//Environment-specific configuration goes here... 'this' refers to 'asset'
 	
@@ -90,19 +92,36 @@ asset.configure(function() {
 asset.configure('development', function() {
 	//Put your development-specific config here...
 });
-app.use(asset.middleware);
+asset.deploy();
+app.use(asset.middleware() );
+
+asset.on('deployed', function() {
+	console.log("Yay! It worked!");
+});
 ```
 
 ## API
 
-### `asset.register(extension, fn)`
+### asset.configure([environment,] fn)
+
+TJ-style configure. Define a callback function for the given `environment` (or all environments)
+with callback `fn`.
+
+### asset.useDefaultConfiguration()
+
+Configures static-asset with the default built-in configuration. Usually, you will want to call this
+first, and then override settings manually, if needed.
+
+### asset.register(extension, fn)
 
 Register a handler for the given file `extension`. `fn` can manipulate the body of the file
 and output the contents back to static-asset. `fn` should be of the form: `function (body, filename, cb)`
 with `cb` of the form `function (err, new_body)`. You can also pass an array of extensions as in
 `asset.register(['css', 'styl'], function() {...});`
 
-### `asset.output(fn)`
+If you call `asset.register` again with the same file extension, the previous handler will be replaced.
+
+### asset.output(fn)
 
 Register a handler to deploy the static assets. `fn` is of the form: `function (body, filename, cb)`
 with `cb` of the form `function (err)`
@@ -114,6 +133,7 @@ static-asset comes with many built-in output functions for your convenience:
 	* Deploy the assets to S3? Use `asset.output.s3(opts)`
 
 By default, static-asset will use `asset.output.local` in production and development environments.
+If you call `asset.output` again, the original output function will be replaced by `fn`.
 
 Example:
 
@@ -124,30 +144,81 @@ asset.configure('production', function() {
 		'secret': 'my_secret_key',
 		'bucket': 'my_bucket',
 		'path': ... //optional path prepended to filename
-	}));
+		'headers': ... //optional headers
+	})
+	.use(function(req) {
+		//`use()` is optional, but allows you to do something with the HTTP request Object...
+		req.end(); //Be sure to call end() if you introduce middleware
+	}) );
 }
 asset.configure('development', function() {
 	//Deploy to /public/assets
 	asset.output(asset.output.local);
+	app.use(asset.middleware() );
 });
 ```
 
-### `asset.deploy()`
+### asset.deploy(cb)
 
-Compiles and deploys all static assets according to the options specified.
+Compiles and deploys all static assets according to the options specified. Calls `cb` of the form
+`function (err)` when complete. Also, the 'deployed' signal is emitted after the callback is called.
 
-### `asset.set(key, value)`
+### asset.middleware()
 
-Convenience function to store a key-value pair for later use.
+Returns an Express middleware function of the form: `function (req, res, next)`.
+The middleware is only useful when asset.output.local is set as the output function. In this case,
+if a compiled static asset is requested, strong caching headers will be added to the response. In
+addition, if the client sends "If-Modified-Since" header, then the middleware may respond with 304
+Not Modified, if applicable. Otherwise, the request is passed to the `next` middleware to handle the
+request; presumably, a static file server middleware (i.e. connect.static) will handle the request.
 
-### `asset.get(key, value)`
+Also, the middleware exposes the getURLFingerprint function by adding it to each HTTP request object.
+If Express is used, it is also exposed directly to views via `res.local(...)`.
 
-Convenience function to retrieve a key-value pair that was stored using `set()`.
+Otherwise, if asset.output.local is not used, the default middleware does nothing.
 
-### `asset.version(fn)`
+### asset.use(fn)
+
+Overrides the default middleware with your own function.
+
+### asset.version(fn)
 
 `fn` allows static-asset to determine the version number of an asset. `fn` must be of the form:
 `function(body, filename, cb)` with `cb` of the form `function(err, version_number)`.
 
 This allows static-asset to implement strong caching of assets using URL fingerprinting. By default,
-the version number of an asset is the UNIX timestamp of the file's last modification date.
+the version number of an asset is the UNIX timestamp (in seconds, not milliseconds) of the file's
+last modification date.
+
+### asset.getURLFingerprint(filename, cb)
+
+Generates the URL fingerprint for the specified `filename`, using the function provided in
+`asset.version(fn)`. `cb` is of the form `function(err, urlFingerprint)`.
+
+URL fingerprints are of the form: base_path + base_filename '-' version_number '.' file_extension
+For example: /css/main.css might have a URL fingerprint of /css/main-1318365481.css
+
+### asset.cacheFingerprints(boolean)
+
+Tells static-asset whether or not it should cache URL fingerprints. By default, caching is enabled
+in production, but disabled in development. This means that, in a production environment, a URL
+fingerprint for a given file is only generated once and only the first time that fingerprint is
+requested. In development environments where static assets may be changed, the URL fingerprints may
+change; and therefore, the web browser will be forced to reload the file.
+
+### asset.set(key, value)
+
+Convenience function to store a key-value pair for later use.
+
+### asset.get(key, value)
+
+Convenience function to retrieve a key-value pair that was stored using `set()`.
+
+### Event: error
+
+'error' is emitted whenever an error occurs. Usually, the error object will contain a filename and
+perhaps a lineno properly, if applicable.
+
+### Event: deployed
+
+'deployed' is emitted when deployment is complete.
