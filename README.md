@@ -4,41 +4,36 @@ node-static-asset is *the best* static asset manager for Node.JS, designed for u
 Stylus, and Browserify. This project aims to solve all application deployment problems. No thinking
 required.
 
+## Background
+
+Google has a nice article about strong and weak caching.  It's worth a quick read if you don't know what
+that means.
+
+http://code.google.com/speed/page-speed/docs/caching.html
+
 ## Install
 
 `npm install static-asset`
 
-...and done.
-
-## Basic Usage
-
-Usually, this should be good enough to get started. Stylus, CSS, Jade templates, and client-side
-JavaScript are automatically handled for you.
-
-```javascript
-var app = require('express').createServer();
-var asset = require('static-asset');
-asset.useDefaultConfiguration();
-asset.deploy();
-app.use(asset.middleware);
-```
-
 ## Default Configuration
 
+static-asset can be fully customized, but it has some basic, reasonably sane default behavior.
 By default, static-asset does the following:
 
-* Development Environment
-	* When applicable, all files are compiled with debugging information, uncompressed
-* Production Environment
-	* When applicable, all files are minified and compiled without debugging information
 * .css and .styl files are rendered using Stylus
 * .jade files are compiled and written to *.js files
 * .coffee files are compiled to *.js files (not working yet...)
-* index.js file is bundled using Browserify
+* /client/index.js file is bundled using Browserify
+* Development Environment
+	* When applicable, all files are compiled with debugging information, uncompressed
+	* Source files are watched for changes and URL fingerprints are updated automatically.
+* Production Environment
+	* When applicable, all files are minified and compiled without debugging information
+	* URL fingerprints are cached and may change only if the server is restarted
 * Assumes the following directory structure for your project:
 
 ```
-	project/
+	project_root/
 		/server
 			The location of app.js
 		/client
@@ -59,7 +54,53 @@ By default, static-asset does the following:
 				This directory will never be touched. It's safe to put files in /static
 ```
 
+## Basic Usage
+
+Usually, this should be good enough to get started. Stylus, CSS, Jade templates, and client-side
+JavaScript are automatically handled for you.
+
+WARNING: the code below may wipe the contents of /public/assets. Please read the documentation carefully.
+
+```javascript
+//Assume the full path of this file is /home/../project/server/app.js
+var express = require('express');
+var app = express.createServer();
+var asset = require('static-asset');
+asset.setPath('root', __dirname + "/../");
+asset.useDefaultConfiguration();
+asset.deploy();
+app.use(asset.middleware);
+app.use(express.static(__dirname + '/../public) );
+
+//... application code follows (routes, etc.)
+```
+
+What just happened? Well, all of your static assets were just compiled and stored in /public/assets.
+In addition, the static assets can now be accessed using their URL fingerprint. For example,
+if you want to include your client-side JavaScript code and your /css/main.styl stylesheet, simply
+do this in your Jade view:
+
+```
+script(type="text/javascript", src=getURLFingerprint("/assets/client.js") )
+link(type="text/css", href=getURLFingerprint("/css/main.styl") )
+```
+
+This will render to something like this:
+
+```html
+<script type="text/javascript" src="/assets/client-1318365481.js"></script>
+<link type="text/css" href="/assets/css/main-1318365481.css"/>
+```
+
+Notice that static-asset added a URL fingerprint (the UNIX timestamp 1318365481) to the filename.
+By default, when the source file is updated in development environments, the URL fingerprint will be
+updated, forcing the browser to reload the file. In production environments, by default, URL fingerprints
+are cached and cannot change until the server is restarted. All of this behavior can be customized,
+however.
+
 ## Advanced Usage
+
+Example:
 
 ```javascript
 var app = require('express').createServer();
@@ -111,6 +152,32 @@ with callback `fn`.
 
 Configures static-asset with the default built-in configuration. Usually, you will want to call this
 first, and then override settings manually, if needed.
+
+### asset.setPath(type, path)
+
+Allows you to customize the directory structure of your project. You should always set the root path
+of the project explicitly.
+
+By default, paths looks like this...
+
+```javascript
+{
+	'root': process.cwd(),
+	'client-js': '/client',
+	'client-lib': '/client/lib',
+	'views': '/views',
+	'css': '/css',
+	'output': '/public',
+	'images': '/public/images'
+}
+```
+
+`asset.setPath('root', '/home/blake/foobar/');` would change the root path of the project. You get the
+idea.
+
+### asset.getPath(type)
+
+This does what you would expect. `asset.getPath('root')` would return '/home/blake/foobar/'.
 
 ### asset.register(extension, fn)
 
