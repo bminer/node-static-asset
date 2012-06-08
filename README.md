@@ -1,3 +1,12 @@
+# This project is dead...
+
+... until further notice ...
+
+
+---
+
+
+
 #node-static-asset
 
 node-static-asset is *the best* static asset manager for Node.JS, designed for use with Express, Jade,
