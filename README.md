@@ -13,8 +13,7 @@ https://developers.google.com/speed/docs/best-practices/caching
 
 ## Getting Started
 
-node-static-asset allows you to generate URL fingerprints for static assets in
-a way that works for your application.
+node-static-asset allows you to generate URL fingerprints for static assets.
 
 1. Add the static-asset middleware to your Express stack
 ```javascript
@@ -40,39 +39,41 @@ and use static-asset to serve them to the browser.
 ## API
 
 The API for static-asset is quite simple. Simply add the static-asset
-middleware, and you get one function attached to each Request Object.
+middleware, and you get a `assetFingerprint` function attached to each Request
+Object.
 
 **require('static-asset')(path[, cache])** - Returns an Express middleware
 function that exposes a `req.assetFingerprint` function and adds
 `assetFingerprint` view helper function.  If any request's URL matches a
 previously generated URL fingerprint, static-asset will attempt to add weak and
 strong caching headers to the response.
-	-path - the path from which static files are served
-	-cache - a "cache strategy" Object, which must implement all "cache
-		strategy" methods, as described below. If `cache` is omitted, the
-		default "cache stategy" is used.
+
+-path - the path from which static files are served
+-cache - a "cache strategy" Object, which must implement all "cache
+	strategy" methods, as described below. If `cache` is omitted, the
+	default "cache stategy" is used.
 
 **"Cache Strategy" Object** - a "cache strategy" object should implement one or
 more of the following methods:
 
-	-lastModified(label_or_filename, cb) - a function that accepts a label
-		or filename and returns its last modified date to the callback.
-		If a last modified date could not be determined, null is passed to the
-		callback; otherwise, static-asset *may* use this Date to set the
-		`Last-Modified` HTTP header when the named resource is served.
+-lastModified(label_or_filename, cb) - a function that accepts a label
+	or filename and returns its last modified date to the callback.
+	If a last modified date could not be determined, null is passed to the
+	callback; otherwise, static-asset *may* use this Date to set the
+	`Last-Modified` HTTP header when the named resource is served.
 
-		-label_or_filename - a label or filename in `path`
-		-cb - a callback of the form `cb(err, lastModifiedDate)`
-	-etag(label_or_filename, cb) - Same as lastModified (above), except
-		that it must return an ETag (or hash value) to the callback.  If the
-		returned ETag is not null, static-asset *may* use this value to set the
-		`ETag` HTTP header when the named resource is served.
-	-expires(label_or_filename, cb) - Same as lastModified (above), except
-		that it must return a Date Object indicating when the resource shall
-		expire. The Date may be no more than one year in the future. If
-		`expires` is implemented, static-asset *may* use the date to set an
-		`Expires` and/or `Cache-Control: max-age` HTTP headers; otherwise,
-		static-asset will use a Date approximately one year into the future.
+	-label_or_filename - a label or filename in `path`
+	-cb - a callback of the form `cb(err, lastModifiedDate)`
+-etag(label_or_filename, cb) - Same as lastModified (above), except
+	that it must return an ETag (or hash value) to the callback.  If the
+	returned ETag is not null, static-asset *may* use this value to set the
+	`ETag` HTTP header when the named resource is served.
+-expires(label_or_filename, cb) - Same as lastModified (above), except
+	that it must return a Date Object indicating when the resource shall
+	expire. The Date may be no more than one year in the future. If
+	`expires` is implemented, static-asset *may* use the date to set an
+	`Expires` and/or `Cache-Control: max-age` HTTP headers; otherwise,
+	static-asset will use a Date approximately one year into the future.
 
 **req.assetFingerprint(label_or_filename)** - Using static-asset's "cache
 strategy", return a URL fingerprint for the labelled resource, or if no such
