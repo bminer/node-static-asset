@@ -56,19 +56,19 @@ strong caching headers to the response.
 **"Cache Strategy" Object** - a "cache strategy" object should implement one or
 more of the following methods:
 
--lastModified(label_or_filename, cb) - a function that accepts a label
+- lastModified(label_or_filename, cb) - a function that accepts a label
 	or filename and returns its last modified date to the callback.
 	If a last modified date could not be determined, null is passed to the
 	callback; otherwise, static-asset *may* use this Date to set the
 	`Last-Modified` HTTP header when the named resource is served.
 
-	-label_or_filename - a label or filename in `path`
-	-cb - a callback of the form `cb(err, lastModifiedDate)`
--etag(label_or_filename, cb) - Same as lastModified (above), except
+	- label_or_filename - a label or filename in `path`
+	- cb - a callback of the form `cb(err, lastModifiedDate)`
+- etag(label_or_filename, cb) - Same as lastModified (above), except
 	that it must return an ETag (or hash value) to the callback.  If the
 	returned ETag is not null, static-asset *may* use this value to set the
 	`ETag` HTTP header when the named resource is served.
--expires(label_or_filename, cb) - Same as lastModified (above), except
+- expires(label_or_filename, cb) - Same as lastModified (above), except
 	that it must return a Date Object indicating when the resource shall
 	expire. The Date may be no more than one year in the future. If
 	`expires` is implemented, static-asset *may* use the date to set an
@@ -83,13 +83,13 @@ to determine its fingerprint.
 **req.assetFingerprint(label, urlFingerprint, cacheInfo)** - Registers a URL
 fingerprint for the specified label.
 
--label - a label identifying the resource
--urlFingerprint - the URL fingerprint for the resource. If a request for this
+- label - a label identifying the resource
+- urlFingerprint - the URL fingerprint for the resource. If a request for this
 	resource is made, static-asset may add caching headers to the response.
--cacheInfo - an Object containing these properties:
-	-lastModified - the last modified date of the resource
-	-etag - the ETag of the resource
-	-expires - the expiration date of the resource; if not given, the resource
+- cacheInfo - an Object containing these properties:
+	- lastModified - the last modified date of the resource
+	- etag - the ETag of the resource
+	- expires - the expiration date of the resource; if not given, the resource
 		will expire approximately one year in the future. Set to `null` to
 		disable strong caching headers.
 
@@ -152,7 +152,7 @@ If you are using the default "cache strategy":
 You can override the "cache strategy" with your own implementation that might
 allow you to:
 
--Upload the asset to Amazon S3 and generate a URL fingerprint that points to S3
--Fly in a spaceship to the moon
--Do something really crazy like generate URL fingerprints that are
+- Upload the asset to Amazon S3 and generate a URL fingerprint that points to S3
+- Fly in a spaceship to the moon
+- Do something really crazy like generate URL fingerprints that are
 Base64-encoded MD5-hashes of the names of random lunar craters.
