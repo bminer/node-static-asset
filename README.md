@@ -56,29 +56,27 @@ strong caching headers to the response.
 **"Cache Strategy" Object** - a "cache strategy" object should implement one or
 more of the following methods:
 
-- `lastModified(filename, cb)` - a function that accepts a filename and returns
-	its last modified date to the callback. If a last modified date could not
-	be determined, null is passed to the callback; otherwise, static-asset
+- `lastModified(filename)` - a function that accepts a filename and returns
+	its last modified date. If a last modified date could not
+	be determined, the function should return `null`; otherwise, static-asset
 	*may* use this Date to set the `Last-Modified` HTTP response header when
 	the resource is requested.
-
-	- `label_or_filename` - a label or filename in `path`
-	- `cb` - a callback of the form `cb(err, lastModifiedDate)`
 - `etag(filename, cb)` - Same as lastModified (above), except that it must
-	return an ETag (or hash value) to the callback.  If the
-	returned ETag is not null, static-asset *may* use this value to set the
+	return an ETag (or hash value).  If the
+	returned ETag is not `null`, static-asset *may* use this value to set the
 	`ETag` HTTP header when the named resource is requested.
-- `expires(filename, cb)` - Same as lastModified (above), except
+- `expires(filename)` - Same as lastModified (above), except
 	that it must return a Date Object indicating when the resource shall
 	expire. The Date may be no more than one year in the future. If
 	`expires` is implemented, static-asset *may* use the date to set an
 	`Expires` and/or `Cache-Control: max-age` HTTP headers; otherwise,
 	static-asset will use a Date approximately one year into the future.
 
-**req.assetFingerprint(label_or_filename)** - Using static-asset's "cache
-strategy", return a URL fingerprint for the labelled resource, or if no such
-label is registered, attempt to locate the specified filename within the `path`
-to determine its fingerprint.
+**req.assetFingerprint(label_or_filename)** - Return a URL fingerprint for the
+labelled resource, or if no such label is registered, use the "cache
+strategy" to determine the file's ETag or last modified date. If an ETag is
+provided by the cache strategy, it will be used to generate the fingerprint;
+otherwise, the last modified date will be used.
 
 **req.assetFingerprint(label, urlFingerprint, cacheInfo)** - Registers a URL
 fingerprint for the specified label.

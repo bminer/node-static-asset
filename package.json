@@ -2,14 +2,23 @@
   "author": "Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com)",
   "name": "static-asset",
   "description": "Static asset manager for Node.JS and Express",
-  "version": "0.0.0",
+  "keywords": [
+	"asset",
+	"static",
+	"cache",
+	"caching",
+	"fingerprint",
+	"express",
+	"middleware"
+  ]
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/bminer/node-static-asset.git"
   },
   "main": "index.js",
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=0.6"
   },
   "dependencies": {
 	"crc": ">=0.2"
