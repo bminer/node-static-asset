@@ -56,19 +56,19 @@ strong caching headers to the response.
 **"Cache Strategy" Object** - a "cache strategy" object should implement one or
 more of the following methods:
 
-- `lastModified(label_or_filename, cb)` - a function that accepts a label
-	or filename and returns its last modified date to the callback.
-	If a last modified date could not be determined, null is passed to the
-	callback; otherwise, static-asset *may* use this Date to set the
-	`Last-Modified` HTTP header when the named resource is served.
+- `lastModified(filename, cb)` - a function that accepts a filename and returns
+	its last modified date to the callback. If a last modified date could not
+	be determined, null is passed to the callback; otherwise, static-asset
+	*may* use this Date to set the `Last-Modified` HTTP response header when
+	the resource is requested.
 
-	- label_or_filename - a label or filename in `path`
-	- cb - a callback of the form `cb(err, lastModifiedDate)`
-- `etag(label_or_filename, cb)` - Same as lastModified (above), except
-	that it must return an ETag (or hash value) to the callback.  If the
+	- `label_or_filename` - a label or filename in `path`
+	- `cb` - a callback of the form `cb(err, lastModifiedDate)`
+- `etag(filename, cb)` - Same as lastModified (above), except that it must
+	return an ETag (or hash value) to the callback.  If the
 	returned ETag is not null, static-asset *may* use this value to set the
-	`ETag` HTTP header when the named resource is served.
-- `expires(label_or_filename, cb)` - Same as lastModified (above), except
+	`ETag` HTTP header when the named resource is requested.
+- `expires(filename, cb)` - Same as lastModified (above), except
 	that it must return a Date Object indicating when the resource shall
 	expire. The Date may be no more than one year in the future. If
 	`expires` is implemented, static-asset *may* use the date to set an

@@ -1,7 +1,7 @@
 {
   "author": "Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com)",
   "name": "static-asset",
-  "description": "Static asset manager for Node.JS",
+  "description": "Static asset manager for Node.JS and Express",
   "version": "0.0.0",
   "repository": {
     "type": "git",
@@ -11,6 +11,8 @@
   "engines": {
     "node": ">=0.6.0"
   },
-  "dependencies": {},
+  "dependencies": {
+	"crc": ">=0.2"
+  },
   "devDependencies": {}
 }
