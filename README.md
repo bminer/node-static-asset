@@ -42,16 +42,20 @@ The API for static-asset is quite simple. Simply add the static-asset
 middleware, and you get a `assetFingerprint` function attached to each Request
 Object.
 
-**require('static-asset')(path[, cache])** - Returns an Express middleware
+**require('static-asset')(path[, options])** - Returns an Express middleware
 function that exposes a `req.assetFingerprint` function and adds
 `assetFingerprint` view helper function.  If any request's URL matches a
 previously generated URL fingerprint, static-asset will attempt to add weak and
 strong caching headers to the response.
 
 - `path` - the path from which static files are served
-- `cache` - a "cache strategy" Object, which must implement all "cache
-	strategy" methods, as described below. If `cache` is omitted, the
-	default "cache stategy" is used.
+- `options` - The options are:
+    - `cache` - a "cache strategy" Object, which must implement all "cache
+	   strategy" methods, as described below. If `cache` is omitted, the
+	   default "cache stategy" is used.
+    - `set_expires_headers` - set to false to disable setting `Expires` and
+       `Cache-Control` headers (default: `true`)
+    - `debug` - set to true to enable console logging (default: `false`)
 
 **"Cache Strategy" Object** - a "cache strategy" object should implement one or
 more of the following methods:
