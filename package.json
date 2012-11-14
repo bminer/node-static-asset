@@ -11,14 +11,14 @@
 	"express",
 	"middleware"
   ],
-  "version": "0.3.0",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/bminer/node-static-asset.git"
   },
   "main": "index.js",
   "engines": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   },
   "dependencies": {
 	"crc": ">=0.2"
