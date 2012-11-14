@@ -11,6 +11,10 @@ read if you don't know what that means.
 
 https://developers.google.com/speed/docs/best-practices/caching
 
+## Install
+
+`npm install static-asset`
+
 ## Getting Started
 
 node-static-asset allows you to generate URL fingerprints for static assets.
@@ -48,7 +52,7 @@ static asset (i.e. when `req.url` matches the registered URL fingerprint) will
 trigger static-asset to set certain HTTP headers (i.e. Last-Modified, ETag, or
 Expires).
 
-## Adding the middleware function
+### Adding the middleware function
 
 **require('static-asset')(path[, cache])** - Returns an Express middleware
 function that exposes a `req.assetFingerprint` function and adds
@@ -102,7 +106,7 @@ If you call `req.assetFingerprint()` with no arguments, a fingerprint will be
 registered and generated using the cache strategy on the current URL (i.e.
 `req.url`). This is equivalent to `req.assetFingerprint(req.url)`.
 
-## Labelled resources
+### Labelled resources
 
 You can call `req.assetFingerprint(label, fingerprint, cacheInfo)` to manually
 assign a `fingerprint` for the specified `label`. In addition, the HTTP headers
@@ -138,16 +142,12 @@ static-asset will respond by setting the appropriate HTTP headers, according to 
 `req.assetFingerprint(label, fingerprint, cacheInfo)` call.
 
 
-## Install
-
-`npm install static-asset`
-
 ## Default Caching Strategy
 
 static-asset can be fully customized, but it has some basic, reasonably sane default behavior.
 By default, static-asset does the following:
 
-## Basic Usage
+### Basic Usage
 
 Usually, this should be good enough to get started.
 
@@ -182,7 +182,7 @@ If you are using the default "cache strategy":
 	-In production environments, the URL fingerprints are cached and cannot
 		change until the server is restarted.
 
-## Advanced Usage
+### Advanced Usage
 
 You can override the "cache strategy" with your own implementation that might
 allow you to:
