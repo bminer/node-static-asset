@@ -147,6 +147,18 @@ static-asset will respond by setting the appropriate HTTP headers, according to 
 static-asset can be fully customized, but it has some basic, reasonably sane default behavior.
 By default, static-asset does the following:
 
+- The URL fingerprint of the resource is based on the ETag
+- The ETag is generated based upon the file size and the file's CRC-32 hash.
+- The last modified date is pulled from `fs.stat`
+- The expires date is set to one year in the future
+- The default strategy relies on [`connect.static`]
+(http://www.senchalabs.org/connect/middleware-static.html) to load the resource from
+the filesystem.
+- In development environments (based on `process.env.NODE_ENV`), the URL fingerprint
+will be updated whenever the file changes
+- In production environments, the URL fingerprints are cached and cannot
+change until the server is restarted.
+
 ## Basic Usage
 
 Usually, this should be good enough to get started.
@@ -176,11 +188,6 @@ This will render to something like this:
 
 Notice that static-asset added a URL fingerprint (the UNIX timestamp
 1318365481) to the filename.
-If you are using the default "cache strategy":
-- In development environments (based on `process.env.NODE_ENV`), the URL fingerprint
-	will be updated whenever the file changes
-- In production environments, the URL fingerprints are cached and cannot
-	change until the server is restarted.
 
 ## More Advanced Usage
 
