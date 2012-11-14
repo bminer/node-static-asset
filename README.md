@@ -142,12 +142,12 @@ static-asset will respond by setting the appropriate HTTP headers, according to 
 `req.assetFingerprint(label, fingerprint, cacheInfo)` call.
 
 
-## Default Caching Strategy
+### Default Caching Strategy
 
 static-asset can be fully customized, but it has some basic, reasonably sane default behavior.
 By default, static-asset does the following:
 
-### Basic Usage
+## Basic Usage
 
 Usually, this should be good enough to get started.
 
@@ -177,12 +177,12 @@ This will render to something like this:
 Notice that static-asset added a URL fingerprint (the UNIX timestamp
 1318365481) to the filename.
 If you are using the default "cache strategy":
-	-In development environments (based on NODE_ENV), the URL fingerprint will
-		be updated whenever the file changes
-	-In production environments, the URL fingerprints are cached and cannot
-		change until the server is restarted.
+- In development environments (based on `process.env.NODE_ENV`), the URL fingerprint
+	will be updated whenever the file changes
+- In production environments, the URL fingerprints are cached and cannot
+	change until the server is restarted.
 
-### Advanced Usage
+## More Advanced Usage
 
 You can override the "cache strategy" with your own implementation that might
 allow you to:
