@@ -84,6 +84,10 @@ A "cache strategy" object should implement one or more of the following methods:
 	`expires` is implemented, static-asset *may* use the date to set an
 	`Expires` and/or `Cache-Control: max-age` HTTP headers; otherwise,
 	static-asset will use a Date approximately one year into the future.
+- `fileFingerprint(filename, fullPath)` - Returns the URL fingerprint
+	of the resource `filename`, stored at the location `fullPath`.
+	`fullPath` is provided for convenience, since the caching strategy
+	does not know what root path was passed into the static-asset middleware.
 
 ### Registering URL fingerprints
 
