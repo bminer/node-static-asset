@@ -11,7 +11,7 @@
 	"express",
 	"middleware"
   ],
-  "version": "0.5.4",
+  "version": "0.5.5",
   "repository": {
     "type": "git",
     "url": "git://github.com/bminer/node-static-asset.git"
@@ -21,7 +21,7 @@
     "node": ">=0.8"
   },
   "dependencies": {
-	"crc": ">=0.2 <2"
+	"crc": ">=2.0 <3"
   },
   "devDependencies": {}
 }
