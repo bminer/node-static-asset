@@ -1,27 +1,24 @@
 {
-  "author": "Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com)",
-  "name": "static-asset",
-  "description": "Static asset manager for Node.JS and Express",
-  "keywords": [
-	"asset",
-	"static",
-	"cache",
-	"caching",
-	"fingerprint",
-	"express",
-	"middleware"
-  ],
-  "version": "0.5.5",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/bminer/node-static-asset.git"
-  },
-  "main": "index.js",
-  "engines": {
-    "node": ">=0.8"
-  },
-  "dependencies": {
-	"crc": ">=2.0 <3"
-  },
-  "devDependencies": {}
+	"author": "Blake Miner <miner.blake@gmail.com> (http://www.blakeminer.com)",
+	"name": "static-asset",
+	"description": "Static asset manager for Node.JS and Express",
+	"keywords": ["asset", "static", "cache", "caching", "fingerprint",
+		"express","middleware"
+	],
+	"version": "0.5.5",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/bminer/node-static-asset.git"
+	},
+	"main": "index.js",
+	"engines": {
+		"node": ">=0.8"
+	},
+	"dependencies": {
+		"crc": ">=2.0 <3"
+	},
+	"peerDependencies": {
+		"express": ">=3"
+	},
+	"devDependencies": {}
 }
