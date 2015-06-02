@@ -54,7 +54,7 @@ Expires).
 
 ### Adding the middleware function
 
-**require('static-asset')(path[, cache])** - Returns an Express middleware
+**require('static-asset')(path[, cache, autoFingerprintRegex])** - Returns an Express middleware
 function that exposes a `req.assetFingerprint` function and adds
 `assetFingerprint` view helper function to `res.locals`.  If any request's URL
 matches a previously generated URL fingerprint, static-asset will attempt to add
@@ -64,6 +64,12 @@ weak and strong caching headers to the HTTP response.
 - `cache` - a "cache strategy" Object, which must implement all "cache
 	strategy" methods, as described below. If `cache` is omitted, the
 	default "cache stategy" is used.
+- `autoFingerprintRegex` - a RegEx for matching Urls that you want a fingerprint created for
+	regardless of whether `req.assetFingerprint()` has been called. This is useful if you have multiple
+	threads because only one thread will call `req.assetFingerprint()` when rendering your view. You must 
+	still call `req.assetFingerprint()` in your view even if you use this parameter otherwise the cache 
+	busting will not work. Example `/^(\/javascript\/|\/css\/).+(\?v=.+)$/ig` matches all urls that start with 
+	`/javascript/' or '/css/' and end with a `?v=xxxx`.
 
 ### A "Cache Strategy" Object
 
