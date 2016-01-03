@@ -44,7 +44,7 @@ Last-Modified, ETag, and Expires).
 
 ## API
 
-static-asset exposes a function `req.assetFingerprint`, which allows one to generate
+static-asset exposes a function `req.assetFingerprint` ( by default, though it can be exported under a different name, in case you want to use the middleware for more than one directory ), which allows one to generate
 and register URL fingerprints for static assets.
 
 Once a URL fingerprint is *registered* with static-asset, any HTTP request for that
@@ -192,6 +192,25 @@ This will render to something like this:
 
 Notice that static-asset added a URL fingerprint (the UNIX timestamp
 1318365481) to the filename.
+
+Alternatively, if you want to use the middleware for more than one folder, you can do so like this:
+
+```javascript
+var express = require('express');
+var app = express();
+var staticAsset = require('static-asset');
+app.use(staticAsset(__dirname + "/public/") );
+app.use(staticAsset(__dirname + "/other-public/", null, "secondaryAssetFingerprint") );
+app.use(express.static(__dirname + "/public/") );
+//... application code follows (routes, etc.)
+```
+And then, in your jade view:
+
+```jade
+script(type="text/javascript", src=assetFingerprint("/client.js") )
+script(type="text/javascript", src=secondaryAssetFingerprint("/client2.js") )
+```
+
 
 ## More Advanced Usage
 
